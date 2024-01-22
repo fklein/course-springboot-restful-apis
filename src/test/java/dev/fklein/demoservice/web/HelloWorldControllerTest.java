@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,6 +27,14 @@ class HelloWorldControllerTest {
                         .accept("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello World"));
+    }
+
+    @Test
+    @DisplayName("GET on /userdetails should return a fixed user")
+    public void userdetails_shouldReturnAuser() throws Exception {
+        mock.perform(get("/userdetails").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{lastName: Mustermann, firstName: Max, city: München}"));
     }
 
 }
