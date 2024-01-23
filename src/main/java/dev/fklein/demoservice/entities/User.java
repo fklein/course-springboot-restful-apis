@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.Objects;
+
 @Entity  //@Entity(name = "User")
 @Table(name = "[USER]")     // Quote the table name, because it is a keyword in H2
 public class User {
@@ -113,5 +115,24 @@ public class User {
                 ", role='" + role + '\'' +
                 ", ssn='" + ssn + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id)
+                && Objects.equals(userName, user.userName)
+                && Objects.equals(firstName, user.firstName)
+                && Objects.equals(lastName, user.lastName)
+                && Objects.equals(email, user.email)
+                && Objects.equals(role, user.role)
+                && Objects.equals(ssn, user.ssn);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userName, firstName, lastName, email, role, ssn);
     }
 }
