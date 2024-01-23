@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity  //@Entity(name = "User")
-@Table(name = "USER")
+@Table(name = "[USER]")     // Quote the table name, because it is a keyword in H2
 public class User {
 
     @Id
