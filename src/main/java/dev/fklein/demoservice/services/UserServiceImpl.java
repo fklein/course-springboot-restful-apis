@@ -32,4 +32,13 @@ public class UserServiceImpl implements UserService {
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);//.orElse(null);
     }
+
+    @Override
+    public User updateUserById(Long id, User user) throws Exception {
+        if (userRepository.findById(id).isEmpty()) {
+            throw new Exception(String.format("User id %d is unknown", id));
+        }
+        user.setId(id);
+        return userRepository.save(user);
+    }
 }

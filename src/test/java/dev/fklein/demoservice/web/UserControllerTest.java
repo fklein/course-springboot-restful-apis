@@ -1,5 +1,6 @@
 package dev.fklein.demoservice.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.fklein.demoservice.entities.User;
 import dev.fklein.demoservice.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,11 +16,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
@@ -117,4 +119,36 @@ class UserControllerTest {
         verify(userService).getUserById(123L);
     }
 
+    @Test
+    void updateUserById() throws Exception {
+        User user = users.get(1);
+        String userJson = (new ObjectMapper()).writeValueAsString(user);
+        when(userService.updateUserById(anyLong(), any(User.class))).thenAnswer(
+                invocation -> {
+                    Long i = invocation.getArgument(0);
+                    User u = invocation.getArgument(1);
+                    u.setId(i);
+                    return u;
+                });
+        mvc.perform(put("/users/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{id: 999, userName: uname2, firstName: Firstname2, lastName: Lastname2}"));
+        verify(userService).updateUserById(eq(999L), any(User.class));
+    }
+
+    @Test
+    void updateUserById_unknownUser() throws Exception {
+        User user = users.get(1);
+        String userJson = (new ObjectMapper()).writeValueAsString(user);
+        when(userService.updateUserById(anyLong(), any(User.class))).thenThrow(new Exception("Unknown user"));
+        mvc.perform(put("/users/123")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                .andExpect(status().isOk())
+                .andExpect(content().string(""));
+        verify(userService).updateUserById(eq(123L), any(User.class));
+    }
 }

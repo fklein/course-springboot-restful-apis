@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -41,5 +42,14 @@ public class UserController {
     public Optional<User> getUserById(@PathVariable(name = "id") Long  id) {
         return userService.getUserById(id);
 
+    }
+
+    @PutMapping("/{id}")
+    public User updateUserById(@PathVariable(name = "id") Long  id, @RequestBody User user) {
+        try {
+            return userService.updateUserById(id, user);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

@@ -9,13 +9,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -96,6 +95,28 @@ class UserServiceImplTest {
         when(userRepositoryMock.findById(unknownId)).thenReturn(Optional.empty());
         Optional<User> result = userService.getUserById(unknownId);
         assertThat(result).isEmpty();
+        verify(userRepositoryMock).findById(unknownId);
+    }
+
+    @Test
+    void updateUserById() throws Exception {
+        Long userId = 99L;
+        User user = users.get(0);
+        when(userRepositoryMock.findById(any())).thenReturn(Optional.of(user));
+        when(userRepositoryMock.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
+        User result = userService.updateUserById(userId, user);
+        assertThat(result).isEqualTo(user);
+        verify(userRepositoryMock).findById(userId);
+        verify(userRepositoryMock).save(user);
+    }
+
+    @Test
+    void updateUserById_userUnknown() throws Exception {
+        Long unknownId = 123L;
+        User user = users.get(0);
+        when(userRepositoryMock.findById(any())).thenReturn(Optional.empty());
+        // assertThatThrownBy(() -> userService.updateUserById(unknownId, user)).isInstanceOf(Exception.class);
+        assertThatExceptionOfType(Exception.class).isThrownBy(() -> userService.updateUserById(unknownId, user));
         verify(userRepositoryMock).findById(unknownId);
     }
 }
