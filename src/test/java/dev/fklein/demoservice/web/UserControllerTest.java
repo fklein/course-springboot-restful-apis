@@ -5,6 +5,7 @@ import dev.fklein.demoservice.entities.User;
 import dev.fklein.demoservice.exceptions.UserExistsException;
 import dev.fklein.demoservice.exceptions.UserNotFoundException;
 import dev.fklein.demoservice.services.UserService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +92,7 @@ class UserControllerTest {
                         .content(userJson))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                //.andExpect(header().string("Location", Matchers.endsWith("/users/999"))
                 .andExpect(content().json(userJson))
                 .andExpect(content().json("{id: 999}"));
         verify(userService).createUser(any(User.class));
