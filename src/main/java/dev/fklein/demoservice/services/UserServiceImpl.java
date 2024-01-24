@@ -1,6 +1,7 @@
 package dev.fklein.demoservice.services;
 
 import dev.fklein.demoservice.entities.User;
+import dev.fklein.demoservice.exceptions.UserNotFoundException;
 import dev.fklein.demoservice.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);//.orElse(null);
+    public User getUserById(Long id) throws UserNotFoundException {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new UserNotFoundException("User with id " + id + " not found in repository");
+        }
+        return user.get();
+        //return user.orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found in repository"));
     }
 
     @Override

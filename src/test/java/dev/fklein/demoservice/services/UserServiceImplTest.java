@@ -1,6 +1,7 @@
 package dev.fklein.demoservice.services;
 
 import dev.fklein.demoservice.entities.User;
+import dev.fklein.demoservice.exceptions.UserNotFoundException;
 import dev.fklein.demoservice.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,13 +80,13 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUserById() {
+    void getUserById() throws Exception {
         Long userId = 99L;
         User user = users.get(0);
         user.setId(userId);
         when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
-        Optional<User> result = userService.getUserById(userId);
-        assertThat(result).isNotEmpty().contains(user);
+        User result = userService.getUserById(userId);
+        assertThat(result).isEqualTo(user);
         verify(userRepositoryMock).findById(userId);
     }
 
@@ -93,8 +94,10 @@ class UserServiceImplTest {
     void getUserById_unknownId() {
         Long unknownId = 123L;
         when(userRepositoryMock.findById(unknownId)).thenReturn(Optional.empty());
-        Optional<User> result = userService.getUserById(unknownId);
-        assertThat(result).isEmpty();
+        Exception ex = catchException(() -> userService.getUserById(unknownId));
+        assertThat(ex).isInstanceOf(UserNotFoundException.class);
+        // assertThatThrownBy(() -> userService.getUserById(unknownId)).isInstanceOf(UserNotFoundException.class);
+        // assertThrows(UserNotFoundException.class, () -> userService.getUserById(unknownId));
         verify(userRepositoryMock).findById(unknownId);
     }
 

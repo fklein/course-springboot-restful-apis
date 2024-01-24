@@ -2,6 +2,7 @@ package dev.fklein.demoservice.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.fklein.demoservice.entities.User;
+import dev.fklein.demoservice.exceptions.UserNotFoundException;
 import dev.fklein.demoservice.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
@@ -99,7 +99,7 @@ class UserControllerTest {
     void findById() throws Exception {
         User user = users.get(0);
         user.setId(99L);
-        when(userService.getUserById(any())).thenReturn(Optional.of(user));
+        when(userService.getUserById(any())).thenReturn(user);
         mvc.perform(get("/users/99").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -109,11 +109,10 @@ class UserControllerTest {
 
     @Test
     void findById_unknownId() throws Exception {
-        when(userService.getUserById(any())).thenReturn(Optional.empty());
+        when(userService.getUserById(any())).thenThrow(new UserNotFoundException(""));
         mvc.perform(get("/users/123").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string("null"));
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(""));
         verify(userService).getUserById(123L);
     }
 
