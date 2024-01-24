@@ -1,6 +1,7 @@
 package dev.fklein.demoservice.services;
 
 import dev.fklein.demoservice.entities.User;
+import dev.fklein.demoservice.exceptions.UserExistsException;
 import dev.fklein.demoservice.exceptions.UserNotFoundException;
 import dev.fklein.demoservice.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -59,9 +60,10 @@ class UserServiceImplTest {
     }
 
     @Test
-    void createUser() {
+    void createUser() throws UserExistsException {
         User user = users.get(0);
         user.setId(999L);
+        when(userRepositoryMock.findByUserName(anyString())).thenReturn(null);
         when(userRepositoryMock.save(any(User.class))).thenAnswer(invocation -> {
             User u = (User) invocation.getArguments()[0];
             u.setId(123L);
@@ -69,14 +71,15 @@ class UserServiceImplTest {
         });
         User result = userService.createUser(user);
         assertThat(result).isEqualTo(user);
+        verify(userRepositoryMock).findByUserName(anyString());
         verify(userRepositoryMock).save(any(User.class));
     }
 
     @Test
-    void createUser_passException() {
-        when(userRepositoryMock.save(null)).thenThrow(new RuntimeException("bla"));
-        assertThrows(RuntimeException.class, () -> userService.createUser(null));
-        verify(userRepositoryMock).save(null);
+    void createUser_UserExists() {
+        when(userRepositoryMock.findByUserName(anyString())).thenReturn(new User());
+        assertThrows(UserExistsException.class, () -> userService.createUser(users.get(0)));
+        verify(userRepositoryMock).findByUserName(eq(users.get(0).getUserName()));
     }
 
     @Test

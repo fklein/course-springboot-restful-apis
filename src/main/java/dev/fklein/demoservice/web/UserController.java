@@ -1,6 +1,7 @@
 package dev.fklein.demoservice.web;
 
 import dev.fklein.demoservice.entities.User;
+import dev.fklein.demoservice.exceptions.UserExistsException;
 import dev.fklein.demoservice.exceptions.UserNotFoundException;
 import dev.fklein.demoservice.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.nio.channels.ReadPendingException;
 import java.util.List;
 
 @RestController
@@ -37,7 +39,11 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+        try {
+            return userService.createUser(user);
+        } catch (UserExistsException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
     }
 
     @GetMapping("/{id}")

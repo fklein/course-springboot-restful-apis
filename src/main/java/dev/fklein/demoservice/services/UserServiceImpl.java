@@ -1,10 +1,15 @@
 package dev.fklein.demoservice.services;
 
 import dev.fklein.demoservice.entities.User;
+import dev.fklein.demoservice.exceptions.UserExistsException;
 import dev.fklein.demoservice.exceptions.UserNotFoundException;
 import dev.fklein.demoservice.repositories.UserRepository;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +30,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(User user) {
+    public User createUser(User user) throws UserExistsException {
+        if (userRepository.findByUserName(user.getUserName()) != null) {
+            throw new UserExistsException("A user with the name " + user.getUserName() + " already exists");
+        }
         return userRepository.save(user);
     }
 
@@ -52,6 +60,8 @@ public class UserServiceImpl implements UserService {
     public void deleteUserById(Long id) {
         if (userRepository.findById(id).isPresent()) {
             userRepository.deleteById(id);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete an unknown user");
         }
     }
 

@@ -2,6 +2,7 @@ package dev.fklein.demoservice.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.fklein.demoservice.entities.User;
+import dev.fklein.demoservice.exceptions.UserExistsException;
 import dev.fklein.demoservice.exceptions.UserNotFoundException;
 import dev.fklein.demoservice.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,6 +93,27 @@ class UserControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(userJson))
                 .andExpect(content().json("{id: 999}"));
+        verify(userService).createUser(any(User.class));
+    }
+
+    @Test
+    void createUser_alreadyExists() throws Exception {
+        String userJson = """
+                {
+                    "userName": "dnukem",
+                    "firstName": "Duke",
+                    "lastName": "Nukem",
+                    "email": "duke@nukem.com",
+                    "role": "boss",
+                    "ssn": "NUKE1"
+                }
+                """;
+        when(userService.createUser(any())).thenThrow(new UserExistsException("User already exists"));
+        mvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(""));
         verify(userService).createUser(any(User.class));
     }
 
