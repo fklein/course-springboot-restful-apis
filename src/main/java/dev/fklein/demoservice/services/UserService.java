@@ -10,4 +10,5 @@ public interface UserService {
     User createUser(User user);
     Optional<User> getUserById(Long id);
     User updateUserById(Long id, User user) throws Exception;
+    void deleteUserById(Long id);
 }

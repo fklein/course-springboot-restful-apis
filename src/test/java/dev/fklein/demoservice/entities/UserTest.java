@@ -10,8 +10,8 @@ class UserTest {
     void testToString() {
         User a = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1");
         assertEquals("""
-                User{id=null, userName='dnukem', firstName='Duke', lastName='Nukem', email='duke@nukem.com', role='boss', ssn='NUKE1'}\
-                """,
+                        User{id=null, userName='dnukem', firstName='Duke', lastName='Nukem', email='duke@nukem.com', role='boss', ssn='NUKE1'}\
+                        """,
                 a.toString());
     }
 
