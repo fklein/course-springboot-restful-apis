@@ -53,8 +53,8 @@ public class UserController {
     public User updateUserById(@PathVariable(name = "id") Long id, @RequestBody User user) {
         try {
             return userService.updateUserById(id, user);
-        } catch (Exception e) {
-            return null;
+        } catch (UserNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
     }
 

@@ -119,7 +119,7 @@ class UserServiceImplTest {
         User user = users.get(0);
         when(userRepositoryMock.findById(any())).thenReturn(Optional.empty());
         // assertThatThrownBy(() -> userService.updateUserById(unknownId, user)).isInstanceOf(Exception.class);
-        assertThatExceptionOfType(Exception.class).isThrownBy(() -> userService.updateUserById(unknownId, user));
+        assertThatExceptionOfType(UserNotFoundException.class).isThrownBy(() -> userService.updateUserById(unknownId, user));
         verify(userRepositoryMock).findById(unknownId);
     }
 }

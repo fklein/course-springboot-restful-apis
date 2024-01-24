@@ -140,11 +140,11 @@ class UserControllerTest {
     void updateUserById_unknownUser() throws Exception {
         User user = users.get(1);
         String userJson = (new ObjectMapper()).writeValueAsString(user);
-        when(userService.updateUserById(anyLong(), any(User.class))).thenThrow(new Exception("Unknown user"));
+        when(userService.updateUserById(anyLong(), any(User.class))).thenThrow(new UserNotFoundException("Unknown user"));
         mvc.perform(put("/users/123")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
-                .andExpect(status().isOk())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string(""));
         verify(userService).updateUserById(eq(123L), any(User.class));
     }

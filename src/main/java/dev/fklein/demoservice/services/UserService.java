@@ -10,7 +10,7 @@ public interface UserService {
     List<User> getAllUsers();
     User createUser(User user);
     User getUserById(Long id) throws UserNotFoundException;
-    User updateUserById(Long id, User user) throws Exception;
+    User updateUserById(Long id, User user) throws UserNotFoundException;
     void deleteUserById(Long id);
     User getUserByUserName(String userName);
 }

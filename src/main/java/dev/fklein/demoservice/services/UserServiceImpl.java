@@ -40,9 +40,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUserById(Long id, User user) throws Exception {
+    public User updateUserById(Long id, User user) throws UserNotFoundException {
         if (userRepository.findById(id).isEmpty()) {
-            throw new Exception(String.format("User id %d is unknown", id));
+            throw new UserNotFoundException(String.format("User id %d is unknown", id));
         }
         user.setId(id);
         return userRepository.save(user);
