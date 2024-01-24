@@ -1,9 +1,7 @@
 package dev.fklein.demoservice.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.fklein.demoservice.entities.User;
 import dev.fklein.demoservice.services.UserService;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,20 +9,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
 class UserControllerTest {
@@ -75,19 +71,19 @@ class UserControllerTest {
     }
 
     @Test
-    void createUser() throws Exception{
+    void createUser() throws Exception {
         User user = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1");
         user.setId(999L);
         String userJson = """
-            {
-                "userName": "dnukem",
-                "firstName": "Duke",
-                "lastName": "Nukem",
-                "email": "duke@nukem.com",
-                "role": "boss",
-                "ssn": "NUKE1"
-            }
-            """;
+                {
+                    "userName": "dnukem",
+                    "firstName": "Duke",
+                    "lastName": "Nukem",
+                    "email": "duke@nukem.com",
+                    "role": "boss",
+                    "ssn": "NUKE1"
+                }
+                """;
         when(userService.createUser(any())).thenReturn(user);
         mvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -97,6 +93,28 @@ class UserControllerTest {
                 .andExpect(content().json(userJson))
                 .andExpect(content().json("{id: 999}"));
         verify(userService).createUser(any(User.class));
+    }
+
+    @Test
+    void findById() throws Exception {
+        User user = users.get(0);
+        user.setId(99L);
+        when(userService.getUserById(any())).thenReturn(Optional.of(user));
+        mvc.perform(get("/users/99").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{id: 99, userName: uname1, firstName: Firstname1, lastName: Lastname1, email: one@bla.com, role: one, ssn: ssn1}"));
+        verify(userService).getUserById(99L);
+    }
+
+    @Test
+    void findById_unknownId() throws Exception {
+        when(userService.getUserById(any())).thenReturn(Optional.empty());
+        mvc.perform(get("/users/123").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string("null"));
+        verify(userService).getUserById(123L);
     }
 
 }
