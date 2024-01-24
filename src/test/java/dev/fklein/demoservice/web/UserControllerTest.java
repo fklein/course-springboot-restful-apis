@@ -157,4 +157,14 @@ class UserControllerTest {
                 .andExpect(content().string(""));
         verify(userService).deleteUserById(eq(123L));
     }
+
+    @Test
+    void getUserByUserName() throws Exception {
+        User u = users.get(0);
+        when(userService.getUserByUserName(anyString())).thenReturn(u);
+        mvc.perform(get("/users/byName/bla"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{userName: uname1, firstName: Firstname1, lastName: Lastname1, email: one@bla.com, role: one, ssn: ssn1}"));
+        verify(userService).getUserByUserName(eq("bla"));
+    }
 }

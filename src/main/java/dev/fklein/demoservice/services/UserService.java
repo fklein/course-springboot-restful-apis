@@ -11,4 +11,5 @@ public interface UserService {
     Optional<User> getUserById(Long id);
     User updateUserById(Long id, User user) throws Exception;
     void deleteUserById(Long id);
+    User getUserByUserName(String userName);
 }
