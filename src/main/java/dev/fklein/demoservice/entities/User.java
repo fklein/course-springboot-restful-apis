@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
@@ -17,9 +19,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty(message = "Username is a mandatory field")
     @Column(name = "USER_NAME", length = 50, nullable = false, unique = true)
     private String userName;
 
+    @Size(min = 2, message = "firstName should have at least 2 characters")
     @Column(name = "FIRST_NAME", length = 50, nullable = false)
     private String firstName;
 

@@ -4,12 +4,14 @@ import dev.fklein.demoservice.entities.User;
 import dev.fklein.demoservice.exceptions.UserExistsException;
 import dev.fklein.demoservice.exceptions.UserNotFoundException;
 import dev.fklein.demoservice.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,8 +44,10 @@ public class UserController {
     }
 
     @PostMapping
-    //@ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> createUser(@RequestBody User user, UriComponentsBuilder uriBuilder) {
+    // @ResponseStatus(HttpStatus.CREATED)
+    // Without @Valid validation will happen in Hibernate/JPA and fail with an unresolved exception (=> 500/internal server error)
+    // @Valid here will result in an MethodArgumentNotValidException that is resolved via DefaultHandlerExceptionResolver (=> 400/bad request)
+    public ResponseEntity<User> createUser(@RequestBody @Valid User user, UriComponentsBuilder uriBuilder) {
         try {
             User u = userService.createUser(user);
             HttpHeaders headers = new HttpHeaders();
@@ -82,4 +86,12 @@ public class UserController {
     public User getUserByUserName(@PathVariable(name = "username") String userName) {
         return userService.getUserByUserName(userName);
     }
+
+    /*
+    // Will handle any exceptions, e.g. validation failure in Hibernate/JPA
+    @ExceptionHandler
+    public ResponseEntity<String> handleIt(Exception ex) {
+        return ResponseEntity.badRequest().body("It failed big time: " + ex.getMessage());
+    }
+    */
 }
