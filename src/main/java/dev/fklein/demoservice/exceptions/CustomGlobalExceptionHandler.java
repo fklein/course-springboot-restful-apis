@@ -1,9 +1,11 @@
 package dev.fklein.demoservice.exceptions;
 
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,8 +18,7 @@ import java.util.Date;
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<Object> handleInvalidArgument(Exception ex) {
-        System.out.println("Jalla!");
+    public ResponseEntity<Object> handleFallback(Exception ex) {
         return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("Fuck you!!!" + ex.getMessage());
     }
 
@@ -28,6 +29,15 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 "The data you passed is invalid",
                 ex.getMessage());
         return ResponseEntity.badRequest().body(customErrorDetails);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        CustomErrorDetails customErrorDetails = new CustomErrorDetails(
+                new Date(),
+                "The requested method is not allowed",
+                ex.getMessage());
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(customErrorDetails);
     }
 
     /*
