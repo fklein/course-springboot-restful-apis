@@ -6,7 +6,6 @@ import dev.fklein.demoservice.exceptions.UserNameNotFoundException;
 import dev.fklein.demoservice.exceptions.UserNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
     List<User> getAllUsers();
