@@ -2,6 +2,7 @@ package dev.fklein.demoservice.web;
 
 import dev.fklein.demoservice.entities.User;
 import dev.fklein.demoservice.exceptions.UserExistsException;
+import dev.fklein.demoservice.exceptions.UserNameNotFoundException;
 import dev.fklein.demoservice.exceptions.UserNotFoundException;
 import dev.fklein.demoservice.services.UserService;
 import jakarta.validation.Valid;
@@ -83,7 +84,7 @@ public class UserController {
     }
 
     @GetMapping("/byName/{username}")
-    public User getUserByUserName(@PathVariable(name = "username") String userName) {
+    public User getUserByUserName(@PathVariable(name = "username") String userName) throws UserNameNotFoundException {
         return userService.getUserByUserName(userName);
     }
 

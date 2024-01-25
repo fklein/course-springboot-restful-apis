@@ -2,6 +2,7 @@ package dev.fklein.demoservice.services;
 
 import dev.fklein.demoservice.entities.User;
 import dev.fklein.demoservice.exceptions.UserExistsException;
+import dev.fklein.demoservice.exceptions.UserNameNotFoundException;
 import dev.fklein.demoservice.exceptions.UserNotFoundException;
 import dev.fklein.demoservice.repositories.UserRepository;
 import org.apache.coyote.Response;
@@ -66,7 +67,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByUserName(String userName) {
-        return userRepository.findByUserName(userName);
+    public User getUserByUserName(String userName) throws UserNameNotFoundException {
+        User user = userRepository.findByUserName(userName);
+        if (user == null) {
+            throw new UserNameNotFoundException("User named '" + userName + "' is unknown");
+        }
+        return user;
     }
 }

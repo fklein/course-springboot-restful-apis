@@ -18,10 +18,21 @@ import java.util.Date;
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<Object> handleFallback(Exception ex) {
-        return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("Fuck you!!!" + ex.getMessage());
+    public ResponseEntity<Object> handleFallback(Exception ex, WebRequest request) {
+        return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("Something went terribly wrong: " + ex.getMessage());
     }
 
+    // Add handler for custom exceptions
+    @ExceptionHandler
+    public ResponseEntity<Object> handleUserNameNotFoundException(UserNameNotFoundException ex, WebRequest request) {
+        CustomErrorDetails customErrorDetails = new CustomErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(true));
+        return ResponseEntity.badRequest().body(customErrorDetails);
+    }
+
+    // Override default handling defined in ResponseEntityExceptionHandler
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         CustomErrorDetails customErrorDetails = new CustomErrorDetails(
