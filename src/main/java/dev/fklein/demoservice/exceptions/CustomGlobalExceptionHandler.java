@@ -17,6 +17,7 @@ import java.util.Date;
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    /*
     @ExceptionHandler
     public ResponseEntity<Object> handleFallback(Exception ex, WebRequest request) {
         return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body("Something went terribly wrong: " + ex.getMessage());
@@ -29,8 +30,9 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 new Date(),
                 ex.getMessage(),
                 request.getDescription(true));
-        return ResponseEntity.badRequest().body(customErrorDetails);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customErrorDetails);
     }
+    */
 
     @ExceptionHandler
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
