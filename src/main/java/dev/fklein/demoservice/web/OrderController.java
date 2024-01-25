@@ -57,4 +57,9 @@ public class OrderController {
         order.setUser(u);
         orderService.createOrder(order);
     }
+
+    @GetMapping("/{userId}/orders/{orderId}")
+    public Order getOrderById(@PathVariable("userId") Long userId, @PathVariable("orderId") Long orderId) {
+        return orderService.getOrdersByUserAndId(userId, orderId);
+    }
 }
