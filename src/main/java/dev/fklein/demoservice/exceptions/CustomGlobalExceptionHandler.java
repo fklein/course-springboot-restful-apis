@@ -1,6 +1,6 @@
 package dev.fklein.demoservice.exceptions;
 
-import org.springframework.beans.TypeMismatchException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -29,6 +29,15 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 new Date(),
                 ex.getMessage(),
                 request.getDescription(true));
+        return ResponseEntity.badRequest().body(customErrorDetails);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
+        CustomErrorDetails customErrorDetails = new CustomErrorDetails(
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
         return ResponseEntity.badRequest().body(customErrorDetails);
     }
 
