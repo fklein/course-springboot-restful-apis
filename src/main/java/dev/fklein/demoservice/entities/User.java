@@ -1,5 +1,7 @@
 package dev.fklein.demoservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import jakarta.persistence.CascadeType;
@@ -20,6 +22,7 @@ import java.util.Objects;
 
 @Entity  //@Entity(name = "User")
 @Table(name = "[USER]")     // Quote the table name, because it is a keyword in H2
+@JsonIgnoreProperties({"firstName", "lastName"})
 public class User extends RepresentationModel {
 
     @Id
@@ -44,7 +47,8 @@ public class User extends RepresentationModel {
     @Column(name = "ROLE", length = 50, nullable = false)
     private String role;
 
-    @Column(name = "SSN", length = 50, nullable = false, unique = true)
+    @Column(name = "SSN", length = 50, nullable = true, unique = true)
+    @JsonIgnore
     private String ssn;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
