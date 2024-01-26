@@ -120,7 +120,7 @@ public class User {
 
     @JsonInclude
     public int getOrderCount() {
-        return orders.size();
+        return orders != null ? orders.size() : 0;
     }
 
     public List<Order> getOrders() {

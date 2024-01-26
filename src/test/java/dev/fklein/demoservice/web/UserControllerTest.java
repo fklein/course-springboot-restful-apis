@@ -115,7 +115,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(""));
+                .andExpect(content().json("{title: \"Bad Request\", status: 400}"));
         verify(userService).createUser(any(User.class));
     }
 
@@ -136,7 +136,7 @@ class UserControllerTest {
         when(userService.getUserById(any())).thenThrow(new UserNotFoundException(""));
         mvc.perform(get("/users/123").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string(""));
+                .andExpect(content().json("{status:404}"));
         verify(userService).getUserById(123L);
     }
 
@@ -169,7 +169,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(""));
+                .andExpect(content().json("{title: \"Bad Request\", status: 400}"));
         verify(userService).updateUserById(eq(123L), any(User.class));
     }
 
