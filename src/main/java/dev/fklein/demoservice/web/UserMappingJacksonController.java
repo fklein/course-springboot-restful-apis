@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,6 +37,21 @@ public class UserMappingJacksonController {
         try {
             var user = userService.getUserById(id);
             Set<String> fields = Set.of("id", "ssn", "lastName", "firstName");
+            FilterProvider filterProvider = new SimpleFilterProvider()
+                    .addFilter("customFilter", SimpleBeanPropertyFilter.filterOutAllExcept(fields));
+            MappingJacksonValue mapper = new MappingJacksonValue(user);
+            mapper.setFilters(filterProvider);
+            return mapper;
+        } catch (UserNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        }
+    }
+
+    @GetMapping("/params/{id}")
+    // http://localhost:8080/jacksonfilter/users/params/101?fields=firstName,ssn,lastName
+    public MappingJacksonValue getUserById(@PathVariable("id") @Min(1) Long id, @RequestParam Set<String> fields) {
+        try {
+            var user = userService.getUserById(id);
             FilterProvider filterProvider = new SimpleFilterProvider()
                     .addFilter("customFilter", SimpleBeanPropertyFilter.filterOutAllExcept(fields));
             MappingJacksonValue mapper = new MappingJacksonValue(user);
