@@ -1,6 +1,7 @@
 package dev.fklein.demoservice.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,9 +20,11 @@ public class Order extends RepresentationModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonView(Views.Internal.class)
     private Long orderId;
 
     @Column(name = "description")
+    @JsonView(Views.Internal.class)
     private String orderDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)

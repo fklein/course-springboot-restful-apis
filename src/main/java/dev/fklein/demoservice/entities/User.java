@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -24,36 +25,44 @@ import java.util.Objects;
 @Entity  //@Entity(name = "User")
 @Table(name = "[USER]")     // Quote the table name, because it is a keyword in H2
 // @JsonIgnoreProperties({"firstName", "lastName"})   /* Static filtering */
-@JsonFilter("customFilter")     /* Will break the code, if the filter is not defined */
+// @JsonFilter("customFilter")     /* Will break the code, if the filter is not defined */
 public class User extends RepresentationModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @JsonView(Views.External.class)
     private Long id;
 
     @NotEmpty(message = "Username is a mandatory field")
     @Column(name = "USER_NAME", length = 50, nullable = false, unique = true)
+    @JsonView(Views.External.class)
     private String userName;
 
     @Size(min = 2, message = "firstName should have at least 2 characters")
     @Column(name = "FIRST_NAME", length = 50, nullable = false)
+    @JsonView(Views.External.class)
     private String firstName;
 
     @Column(name = "LAST_NAME", length = 50, nullable = false)
+    @JsonView(Views.External.class)
     private String lastName;
 
     @Column(name = "EMAIL_ADDRESS", length = 50, nullable = false)
+    @JsonView(Views.External.class)
     private String email;
 
     @Column(name = "ROLE", length = 50, nullable = false)
+    @JsonView(Views.Internal.class)
     private String role;
 
     @Column(name = "SSN", length = 50, nullable = true, unique = true)
+    @JsonView(Views.Internal.class)
     //@JsonIgnore   /* Static filtering */
     private String ssn;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonView(Views.Internal.class)
     private List<Order> orders;
 
     // JPA requires a no-args constructor + getters/setters for all fields
