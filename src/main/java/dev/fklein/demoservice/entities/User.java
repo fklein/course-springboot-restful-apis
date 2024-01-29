@@ -1,5 +1,6 @@
 package dev.fklein.demoservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,7 +23,8 @@ import java.util.Objects;
 
 @Entity  //@Entity(name = "User")
 @Table(name = "[USER]")     // Quote the table name, because it is a keyword in H2
-@JsonIgnoreProperties({"firstName", "lastName"})
+// @JsonIgnoreProperties({"firstName", "lastName"})   /* Static filtering */
+@JsonFilter("customFilter")     /* Will break the code, if the filter is not defined */
 public class User extends RepresentationModel {
 
     @Id
@@ -48,7 +50,7 @@ public class User extends RepresentationModel {
     private String role;
 
     @Column(name = "SSN", length = 50, nullable = true, unique = true)
-    @JsonIgnore
+    //@JsonIgnore   /* Static filtering */
     private String ssn;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
