@@ -1,5 +1,6 @@
 package dev.fklein.demoservice.services;
 
+import dev.fklein.demoservice.entities.Order;
 import dev.fklein.demoservice.entities.User;
 import dev.fklein.demoservice.exceptions.UserExistsException;
 import dev.fklein.demoservice.exceptions.UserNameNotFoundException;
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) throws UserExistsException {
         if (userRepository.findByUserName(user.getUserName()) != null) {
             throw new UserExistsException("A user with the name " + user.getUserName() + " already exists");
+        }
+        for (Order o : user.getOrders()) {
+            o.setUser(user);
         }
         return userRepository.save(user);
     }
