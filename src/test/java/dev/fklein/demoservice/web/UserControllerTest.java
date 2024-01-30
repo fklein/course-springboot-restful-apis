@@ -40,9 +40,9 @@ class UserControllerTest {
     @BeforeEach
     void setup() {
         users = new ArrayList<>();
-        users.add(new User("uname1", "Firstname1", "Lastname1", "one@bla.com", "one", "ssn1"));
-        users.add(new User("uname2", "Firstname2", "Lastname2", "two@bla.com", "two", "ssn2"));
-        users.add(new User("uname3", "Firstname3", "Lastname3", "three@bla.com", "three", "ssn3"));
+        users.add(new User("uname1", "Firstname1", "Lastname1", "one@bla.com", "one", "ssn1","bla"));
+        users.add(new User("uname2", "Firstname2", "Lastname2", "two@bla.com", "two", "ssn2","bla"));
+        users.add(new User("uname3", "Firstname3", "Lastname3", "three@bla.com", "three", "ssn3","bla"));
     }
 
     @Test
@@ -75,7 +75,7 @@ class UserControllerTest {
 
     @Test
     void createUser() throws Exception {
-        User user = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1");
+        User user = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1","bla");
         user.setId(999L);
         String userJson = """
                 {

@@ -8,7 +8,7 @@ class UserTest {
 
     @Test
     void testToString() {
-        User a = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1");
+        User a = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1","bla");
         assertEquals("""
                         User{id=null, userName='dnukem', firstName='Duke', lastName='Nukem', email='duke@nukem.com', role='boss', ssn='NUKE1'}\
                         """,
@@ -17,8 +17,8 @@ class UserTest {
 
     @Test
     void testEquals_equal() {
-        User a = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1");
-        User b = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1");
+        User a = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1","bla");
+        User b = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1","bla");
         assertTrue(a.equals(b));
         assertTrue(b.equals(a));
         assertEquals(a.hashCode(), b.hashCode());
@@ -26,14 +26,14 @@ class UserTest {
 
     @Test
     void testEquals_same() {
-        User a = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1");
+        User a = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1","bla");
         assertTrue(a.equals(a));
     }
 
     @Test
     void testEquals_differ() {
-        User a = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1");
-        User b = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1");
+        User a = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1","bla");
+        User b = new User("dnukem", "Duke", "Nukem", "duke@nukem.com", "boss", "NUKE1","bla");
         b.setId(123L);
         assertFalse(a.equals(b));
         assertFalse(b.equals(a));
