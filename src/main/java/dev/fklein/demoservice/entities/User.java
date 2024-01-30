@@ -65,17 +65,21 @@ public class User extends RepresentationModel {
     @JsonView(Views.Internal.class)
     private List<Order> orders;
 
+    @Column(name = "ADDRESS")
+    private String address;
+
     // JPA requires a no-args constructor + getters/setters for all fields
     public User() {
     }
 
-    public User(String userName, String firstName, String lastName, String email, String role, String ssn) {
+    public User(String userName, String firstName, String lastName, String email, String role, String ssn, String address) {
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.role = role;
         this.ssn = ssn;
+        this.address = address;
     }
 
     public Long getId() {
@@ -147,6 +151,14 @@ public class User extends RepresentationModel {
         this.orders = orders;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -157,6 +169,7 @@ public class User extends RepresentationModel {
                 ", email='" + email + '\'' +
                 ", role='" + role + '\'' +
                 ", ssn='" + ssn + '\'' +
+                ", address='" + address + '\'' +
                 '}';
     }
 

@@ -1,9 +1,9 @@
 insert into "user"
-    (id, email_address, first_name, last_name, role, ssn, user_name)
+    (id, email_address, first_name, last_name, role, ssn, user_name, address)
 values
-    (101, 'kreddy@stacksimplify.com', 'Kalyan', 'Reddy', 'admin', 'ssn101', 'kreddy'),
-    (102, 'gwiser@stacksimplify.com', 'Greg', 'Wiser', 'admin', 'ssn102', 'gwiser'),
-    (103, 'dmark@stacksimplify.com', 'David', 'Mark', 'admin', 'ssn103', 'dmark');
+    (101, 'kreddy@stacksimplify.com', 'Kalyan', 'Reddy', 'admin', 'ssn101', 'kreddy', 'Somewhere 1'),
+    (102, 'gwiser@stacksimplify.com', 'Greg', 'Wiser', 'admin', 'ssn102', 'gwiser', 'Somewhere 2'),
+    (103, 'dmark@stacksimplify.com', 'David', 'Mark', 'admin', 'ssn103', 'dmark', 'Somewhere 3');
 
 insert into "order"
     (id, description, user_id)
